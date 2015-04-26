@@ -7,6 +7,8 @@ This app shows a grouped list of Artifacts (Stories, Defects), that match the fo
 
 ((KanbanScheduleState = "") OR ((KanbanScheduleState != ScheduleState) AND (KanbanScheduleState != "Validation")))
 
+![App Screenshot](https://raw.githubusercontent.com/markwilliams970/Rally-ExampleApps/master/KanbanScheduleState/images/screenshot1.png)
+
 ## License
 
 This App is released under the MIT license.  See the file [LICENSE](./LICENSE) for the full text.
