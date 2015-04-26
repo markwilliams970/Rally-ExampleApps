@@ -19,7 +19,7 @@ Ext.define('CustomApp', {
     _filteredArtifactRecords: [],
     _queryContainer: null,
     _artifactGrid: null,
-    _kanbanFieldDisplayName: 'KanbanScheduleState',
+    _kanbanFieldDisplayName: 'c_KanbanScheduleState',
     _validationStateName: "Validation",
 
     // Context
@@ -170,7 +170,7 @@ Ext.define('CustomApp', {
                     text: 'ScheduleState', dataIndex: 'ScheduleState', flex: 1
                 },
                 {
-                    text: 'KanbanScheduleState', dataIndex: 'c_KanbanScheduleState', flex: 1
+                    text: 'KanbanScheduleState', dataIndex: me._kanbanFieldDisplayName, flex: 1
                 }
             ]
         });
