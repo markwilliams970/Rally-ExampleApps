@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TaskBoardWithScheduleState</title>
+
+    <script type="text/javascript" src="/apps/2.0/sdk.js"></script>
+
+    <script type="text/javascript">
+        Rally.onReady(function () {
+                Ext.define("CustomCard",{extend:"Rally.ui.cardboard.Card",alias:"widget.customcard",afterRender:function(){this.callParent(arguments);var color=this._setColor(),colorDiv=this.getEl().down(".artifact-color");colorDiv.setStyle("backgroundColor",color)},reRender:function(){this.callParent(arguments);var color=this._setColor(),colorDiv=this.getEl().down(".artifact-color");colorDiv.setStyle("backgroundColor",color)},_setColor:function(){var color,workProduct=this.getRecord().get("WorkProduct"),scheduleState=workProduct.ScheduleState;return color="Accepted"===scheduleState?"blue":"gray"}});
+                Ext.define("CustomApp",{extend:"Rally.app.App",requires:["CustomCard"],items:[{xtype:"container",html:'<font color="blue">Blue-Colored</font> Cards Associate to <font color="blue">Accepted</font> Work Products'},{xtype:"container",itemId:"iterationDropDown",columnWidth:1},{xtype:"container",itemId:"boardContainer",columnWidth:1}],cardBoard:null,launch:function(){var timeboxScope=this.getContext().getTimeboxScope();if(timeboxScope){var record=timeboxScope.getRecord(),name=record.get("Name");this.myIteration=record.data,this._onIterationSelect()}else this.down("#iterationDropDown").add({xtype:"rallyiterationcombobox",itemId:"iterationSelector",listeners:{select:this._onIterationSelect,ready:this._onIterationSelect,scope:this}})},onTimeboxScopeChange:function(newTimeboxScope){if(this.callParent(arguments),newTimeboxScope){var record=newTimeboxScope.getRecord();this.myIteration=record.data,this._onIterationSelect()}},_onIterationSelect:function(){if(_.isUndefined(this.getContext().getTimeboxScope())){var value=this.down("#iterationSelector").getRecord();this.myIteration=value.data}var iterationName=this.myIteration.Name;this.cardBoard&&(console.log("got here"),this.cardBoard.destroy()),this.cardBoard=Ext.create("Rally.ui.cardboard.CardBoard",{types:["Task"],attribute:"State",context:this.getContext(),cardConfig:{xtype:"customcard",showIconsAndHighlightBorder:!0,editable:!1,fields:["ToDo","WorkProduct"]},rowConfig:{field:"WorkProduct"},storeConfig:{fetch:["WorkProduct","ScheduleState"],filters:[{property:"Iteration.Name",operator:"=",value:iterationName}]}}),this.down("#boardContainer").add(this.cardBoard)}});
+
+            Rally.launchApp('CustomApp', {
+                name:"TaskBoardWithScheduleState",
+	            parentRepos:""
+            });
+
+        });
+    </script>
+
+
+    <style type="text/css">
+        
+    </style>
+</head>
+<body>
+</body>
+</html>
