@@ -70,7 +70,6 @@ Ext.define('CustomApp', {
         var iterationName = this.myIteration.Name;
 
         if (this.cardBoard) {
-            console.log('got here');
             this.cardBoard.destroy();
         }
 
