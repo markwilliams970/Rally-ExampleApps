@@ -27,7 +27,6 @@
 
         _setColor: function(){
             var color;
-            //var scheduleState = this._getScheduleState();
             var workProduct = this.getRecord().get('WorkProduct');
             var scheduleState = workProduct['ScheduleState'];
             if (scheduleState === "Accepted") {
@@ -111,7 +110,6 @@
         var iterationName = this.myIteration.Name;
 
         if (this.cardBoard) {
-            console.log('got here');
             this.cardBoard.destroy();
         }
 
@@ -123,7 +121,7 @@
                 xtype: 'customcard',
                 showIconsAndHighlightBorder: true,
                 editable: false,
-                fields: ['ToDo', 'WorkProduct']
+                fields: ['ToDo', 'Estimate', 'WorkProduct' ]
             },
             rowConfig: {
                 field: 'WorkProduct'

@@ -81,7 +81,7 @@ Ext.define('CustomApp', {
                 xtype: 'customcard',
                 showIconsAndHighlightBorder: true,
                 editable: false,
-                fields: ['ToDo', 'WorkProduct']
+                fields: ['ToDo', 'Estimate', 'WorkProduct' ]
             },
             rowConfig: {
                 field: 'WorkProduct'
