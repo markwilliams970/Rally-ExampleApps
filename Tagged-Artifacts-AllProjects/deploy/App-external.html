@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tagged-Artifacts-AllProjects</title>
+
+    <script type="text/javascript" src="https://rally1.rallydev.com/apps/2.0rc3/sdk.js"></script>
+
+    <script type="text/javascript">
+        Rally.onReady(function () {
+                Ext.define("CustomApp",{extend:"Rally.app.App",componentCls:"app",tagPicker:null,items:[{xtype:"container",itemId:"widgets",columnWidth:1},{xtype:"container",itemId:"gridContainer",columnWidth:1}],_artifactsWithTags:[],_artifactTagsGrid:null,launch:function(){var me=this;this.tagPicker=Ext.create("Rally.ui.picker.TagPicker",{itemId:"tagpicker",width:300}),this.down("#widgets").add(this.tagPicker),this.down("#widgets").add({xtype:"rallybutton",text:"Find Tagged Artifacts",handler:function(){me._getArtifacts()}})},_getArtifacts:function(){var me=this,selectedTagRecords=this.tagPicker._getRecordValue();if(selectedTagRecords.length>0){var myTagFilters=[];Ext.Array.each(selectedTagRecords,function(thisTag){var thisTagName=thisTag.get("Name"),thisFilter={property:"Tags.Name",operator:"contains",value:thisTagName};myTagFilters.push(thisFilter)}),Ext.create("Rally.data.wsapi.artifact.Store",{models:["PortfolioItem","HierarchicalRequirement","Defect","Task","TestCase"],fetch:["ObjectID","FormattedID","Name","Project","Tags","Owner","UserName","DisplayName"],autoLoad:!0,context:{project:null},listeners:{load:this._onDataLoaded,scope:this},filters:Rally.data.wsapi.Filter.or(myTagFilters),limit:1/0})}},_onDataLoaded:function(store,records){var me=this,promises=[];0===records.length&&me._noArtifactsNotify(),Ext.Array.each(records,function(artifact){promises.push(me._getArtifactTags(artifact,me))}),Deft.Promise.all(promises).then({success:function(results){me._artifactsWithTags=results,me._makeGrid()}})},_getArtifactTags:function(artifact,scope){var deferred=Ext.create("Deft.Deferred"),me=scope,tags=[],artifactRef=artifact.get("_ref"),artifactObjectID=artifact.get("ObjectID"),artifactFormattedID=artifact.get("FormattedID"),artifactName=artifact.get("Name"),artifactProject=artifact.get("Project"),artifactScheduleState=artifact.get("ScheduleState"),artifactOwnerObj=artifact.get("Owner"),artifactOwner="";null!==artifactOwnerObj&&(artifactOwner=artifactOwnerObj.DisplayName);var tagsCollection=artifact.getCollection("Tags",{fetch:["Name","ObjectID"]}),tagCount=tagsCollection.getCount();return tagsCollection.load({callback:function(records,operation,success){Ext.Array.each(records,function(tag){tags.push(tag)}),result={_ref:artifactRef,ObjectID:artifactObjectID,FormattedID:artifactFormattedID,Name:artifactName,Project:artifactProject._refObjectName,Owner:artifactOwner,Tags:tags},deferred.resolve(result)}}),deferred},_makeGrid:function(){var me=this;me._artifactTagsGrid&&me._artifactTagsGrid.destroy();var gridStore=Ext.create("Rally.data.custom.Store",{data:me._artifactsWithTags,groupField:"Project",pageSize:50,remoteSort:!1});me._artifactTagsGrid=Ext.create("Rally.ui.grid.Grid",{itemId:"artifactGrid",store:gridStore,features:[{ftype:"groupingsummary",startCollapsed:!0}],columnCfgs:[{text:"Project",dataIndex:"Project",flex:1},{text:"Formatted ID",dataIndex:"FormattedID",xtype:"templatecolumn",tpl:Ext.create("Rally.ui.renderer.template.FormattedIDTemplate")},{text:"Name",dataIndex:"Name",flex:1},{text:"Owner",dataIndex:"Owner",flex:1,renderer:function(value){return null!==value?value:void 0}},{text:"Tags",dataIndex:"Tags",renderer:function(values){var tagArray=[];return Ext.Array.each(values,function(tag){var tagName=tag.get("Name");tagArray.push(tagName)}),tagArray.join(", ")},flex:1}]}),me.down("#gridContainer").add(me._artifactTagsGrid),me._artifactTagsGrid.reconfigure(gridStore)},_noArtifactsNotify:function(){this._artifactTagsGrid=this.down("#gridContainer").add({xtype:"container",html:"No Artifacts found matching selected Tags."})}});
+
+            Rally.launchApp('CustomApp', {
+                name:"Tagged-Artifacts-AllProjects",
+	            parentRepos:""
+            });
+
+        });
+    </script>
+
+
+    <style type="text/css">
+        
+    </style>
+</head>
+<body>
+</body>
+</html>
