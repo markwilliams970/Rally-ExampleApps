@@ -85,8 +85,6 @@ Ext.define('CustomApp', {
             me._allModelTypes.push(modelType);
         });
 
-        console.log(me._allModelTypes);
-
         this._buildUI();
     },
 
