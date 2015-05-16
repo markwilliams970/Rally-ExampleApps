@@ -18,16 +18,19 @@ Ext.define('CustomApp', {
 
     _artifactsWithTags: [],
     _artifactTagsGrid: null,
+    _rallyServer: null,
+
 
     launch: function() {
 
         var me = this;
 
+        this._getHostName();
+
         this.tagPicker = Ext.create('Rally.ui.picker.TagPicker', {
             itemId:'tagpicker',
             width: 300
         });
-
 
         this.down('#widgets').add(this.tagPicker);
 
@@ -39,6 +42,17 @@ Ext.define('CustomApp', {
             }
         });
 
+    },
+
+    _getHostName: function() {
+        testUrl = window.location.hostname || "rally1.rallydev.com";
+        testUrlSplit = testUrl.split("/");
+        if (testUrlSplit.length === 1) {
+            this._rallyHost = "rally1.rallydev.com";
+        } else {
+            this._rallyHost = testUrlSplit[2];
+        }
+        this._rallyServer = "https://" + this._rallyHost;
     },
 
     _getArtifacts: function() {
@@ -61,7 +75,7 @@ Ext.define('CustomApp', {
             });
 
             Ext.create('Rally.data.wsapi.artifact.Store', {
-                models: ['PortfolioItem','HierarchicalRequirement','Defect','Task','TestCase'],
+                models: ['PortfolioItem/Pebble','HierarchicalRequirement','Defect','Task','TestCase'],
                 fetch: ['ObjectID', 'FormattedID', 'Name', 'Project', 'Tags','Owner','UserName','DisplayName'],
                 autoLoad: true,
                 context: {
@@ -111,6 +125,11 @@ Ext.define('CustomApp', {
         var artifactProject         = artifact.get('Project');
         var artifactScheduleState   = artifact.get('ScheduleState');
         var artifactOwnerObj        = artifact.get('Owner');
+        var artifactType            = artifact.get('_type');
+
+        if (artifactType === "hierarchicalrequirement") {
+            artifactType = "userstory";
+        }
 
         var artifactOwner               = "";
         if ( artifactOwnerObj !== null ) {
@@ -128,7 +147,7 @@ Ext.define('CustomApp', {
                 result = {
                     "_ref"          : artifactRef,
                     "ObjectID"      : artifactObjectID,
-                    "FormattedID"   : artifactFormattedID,
+                    "FormattedID"   : {"FormattedID": artifactFormattedID, "ObjectID": artifactObjectID, "Type": artifactType},
                     "Name"          : artifactName,
                     "Project"       : artifactProject._refObjectName,
                     "Owner"         : artifactOwner,
@@ -155,6 +174,8 @@ Ext.define('CustomApp', {
             remoteSort: false
         });
 
+        var formattedIdTemplate = "<a href='{0}/#/detail/{1}/{2}' target='_blank'>{3}</a>";
+
         me._artifactTagsGrid = Ext.create('Rally.ui.grid.Grid', {
             itemId: 'artifactGrid',
             store: gridStore,
@@ -169,8 +190,10 @@ Ext.define('CustomApp', {
                     text: 'Project', dataIndex: 'Project', flex: 1
                 },
                 {
-                    text: 'Formatted ID', dataIndex: 'FormattedID', xtype: 'templatecolumn',
-                    tpl: Ext.create('Rally.ui.renderer.template.FormattedIDTemplate')
+                    text: 'Formatted ID', dataIndex: 'FormattedID',
+                    renderer: function(value) {
+                        return Ext.String.format(formattedIdTemplate, me._rallyServer, value.Type, value.ObjectID, value.FormattedID);
+                    }
                 },
                 {
                     text: 'Name', dataIndex: 'Name', flex: 1
