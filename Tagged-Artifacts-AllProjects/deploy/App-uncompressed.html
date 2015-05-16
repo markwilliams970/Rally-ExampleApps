@@ -29,13 +29,78 @@
     _artifactTagsGrid: null,
     _rallyServer: null,
 
+    _portfolioItemTypesHash: {},
+    _portfolioItemTypesArray: [],
+    _portfolioItemOrdinalsByTypePath: {},
+    _baseModelTypes: ['HierarchicalRequirement','Defect','Task','TestCase'],
+    _allModelTypes: [],
+
+    _addedArtifactOIDs: [],
+
 
     launch: function() {
+        var me = this;
+        this._getHostName();
+        this._getPITypes();
+    },
 
+    _getHostName: function() {
+        testUrl = window.location.hostname || "rally1.rallydev.com";
+        testUrlSplit = testUrl.split("/");
+        if (testUrlSplit.length === 1) {
+            this._rallyHost = "rally1.rallydev.com";
+        } else {
+            this._rallyHost = testUrlSplit[2];
+        }
+        this._rallyServer = "https://" + this._rallyHost;
+    },
+
+    _getPITypes: function() {
+
+        //console.log('_getPITypes');
         var me = this;
 
-        this._getHostName();
+        var piDataStore = Ext.create('Rally.data.wsapi.Store', {
+            model: 'TypeDefinition',
+            autoLoad: true,
+            fetch: true,
+            listeners: {
+                scope: this,
+                load: me._PITypeStoreLoaded
+            },
+            filters: [
+                {
+                    property: 'Parent.Name',
+                    operator: '=',
+                    value: 'Portfolio Item'
+                }
+            ]
+        });
+    },
 
+    _PITypeStoreLoaded: function(store, records) {
+        var me = this;
+        Ext.Array.each(records, function(piTypeRecord) {
+            var ordinal = piTypeRecord.get('Ordinal');
+            if (ordinal != -1) {
+                me._allModelTypes.push(piTypeRecord.get('TypePath'));
+                me._portfolioItemTypesArray.push(piTypeRecord.get('TypePath'));
+                me._portfolioItemTypesHash[piTypeRecord.get('Name')] = piTypeRecord.get('TypePath');
+                me._portfolioItemOrdinalsByTypePath[piTypeRecord.get('TypePath')] = ordinal;
+            }
+        });
+        this._typeFeature = records[0].get('TypePath').toLowerCase();
+        Ext.Array.each(me._baseModelTypes, function(modelType) {
+            me._allModelTypes.push(modelType);
+        });
+
+        console.log(me._allModelTypes);
+
+        this._buildUI();
+    },
+
+    _buildUI: function() {
+        var me = this;
         this.tagPicker = Ext.create('Rally.ui.picker.TagPicker', {
             itemId:'tagpicker',
             width: 300
@@ -50,18 +115,6 @@
                 me._getArtifacts();
             }
         });
-
-    },
-
-    _getHostName: function() {
-        testUrl = window.location.hostname || "rally1.rallydev.com";
-        testUrlSplit = testUrl.split("/");
-        if (testUrlSplit.length === 1) {
-            this._rallyHost = "rally1.rallydev.com";
-        } else {
-            this._rallyHost = testUrlSplit[2];
-        }
-        this._rallyServer = "https://" + this._rallyHost;
     },
 
     _getArtifacts: function() {
@@ -84,7 +137,7 @@
             });
 
             Ext.create('Rally.data.wsapi.artifact.Store', {
-                models: ['PortfolioItem/Pebble','HierarchicalRequirement','Defect','Task','TestCase'],
+                models: me._allModelTypes,
                 fetch: ['ObjectID', 'FormattedID', 'Name', 'Project', 'Tags','Owner','UserName','DisplayName'],
                 autoLoad: true,
                 context: {
@@ -114,7 +167,16 @@
 
         Deft.Promise.all(promises).then({
             success: function(results) {
-                me._artifactsWithTags = results;
+                Ext.Array.each(results, function(result){
+                    var thisObjectID = result.ObjectID;
+                    if (me._addedArtifactOIDs.indexOf(thisObjectID) > -1) {
+                        // Don't add same OID to array multiple times
+                        // Hack to make up for the fact that PI's are returned 3 times in ArtifactStore
+                    } else {
+                        me._addedArtifactOIDs.push(thisObjectID);
+                        me._artifactsWithTags.push(result);
+                    }
+                });
                 me._makeGrid();
             }
         });
