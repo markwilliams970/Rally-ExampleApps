@@ -60,7 +60,9 @@
     ],
 
     cardBoard: null,
-
+    selectedIteration: null,
+    selectedOwner: null,
+    filters: [],
 
     launch: function() {
 
@@ -108,6 +110,37 @@
         }
 
         var iterationName = this.myIteration.Name;
+        this.selectedIteration = iterationName;
+
+        this._buildCardBoard();
+    },
+
+    _getFilters: function() {
+
+        var me = this;
+        var filters = [];
+
+        if ( me.selectedIteration !== null) {
+            filters.push({
+                property: 'Iteration.Name',
+                operator: '=',
+                value: iterationName
+            });
+        }
+
+        if ( me.selectedOwner !== null) {
+            filters.push({
+                property: 'Owner.UserName',
+                operator: '=',
+                value: selectedOwner
+            });
+        }
+        return filters;
+    },
+
+    _buildCardBoard: function() {
+
+        var me = this;
 
         if (this.cardBoard) {
             this.cardBoard.destroy();
@@ -127,14 +160,8 @@
                 field: 'WorkProduct'
             },
             storeConfig:{
-                fetch: ['WorkProduct','ScheduleState'],
-                filters: [
-                    {
-                        property: 'Iteration.Name',
-                        operator: '=',
-                        value: iterationName
-                    }
-                ]
+                fetch: ['WorkProduct','ScheduleState','Owner','UserName'],
+                filters: me._getFilters()
             }
         });
 

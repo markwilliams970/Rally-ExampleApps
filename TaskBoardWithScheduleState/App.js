@@ -14,18 +14,32 @@ Ext.define('CustomApp', {
         },
         {
             xtype: 'container',
+            itemId: 'ownerDropDown',
+            columnWidth: 1,
+            layout: {
+                type: 'hbox'
+            },
+            padding: '10px'
+        },
+        {
+            xtype: 'container',
             itemId: 'boardContainer',
             columnWidth: 1
         }
     ],
 
     cardBoard: null,
-
+    selectedIteration: null,
+    selectedOwner: null,
+    filters: [],
 
     launch: function() {
 
+        var me = this;
+        var currentContext = this.getContext();
+
         // Grab and use the timebox scope if we have it
-        var timeboxScope = this.getContext().getTimeboxScope();
+        var timeboxScope = currentContext.getTimeboxScope();
         if(timeboxScope) {
             var record = timeboxScope.getRecord();
             var name = record.get('Name');
@@ -39,14 +53,39 @@ Ext.define('CustomApp', {
             this.down('#iterationDropDown').add( {
                 xtype: 'rallyiterationcombobox',
                 itemId : 'iterationSelector',
+                fieldLabel: 'Choose Iteration',
                 listeners: {
                     select: this._onIterationSelect,
                     ready:  this._onIterationSelect,
                     scope:  this
-                }
+                },
+                width: 400
             });
         }
 
+        // Add Owner dropdown box
+        this.down('#ownerDropDown').add({
+            xtype: 'rallyusersearchcombobox',
+            itemId: 'ownerSelector',
+            fieldLabel: 'Filter Owner',
+            project: currentContext.getProject(),
+            columnWidth: 1,
+            listeners: {
+                select: this._onOwnerSelect,
+                scope:  this
+            }
+        });
+
+        // Add Clear Owner filter button
+        this.down('#ownerDropDown').add({
+            xtype: 'rallybutton',
+            text: 'Clear Owner Filter',
+            handler: function() {
+                me.down('#ownerSelector').clearValue();
+                me.selectedOwner = null;
+                me._buildCardBoard();
+            }
+        });
     },
 
     onTimeboxScopeChange: function(newTimeboxScope) {
@@ -68,6 +107,47 @@ Ext.define('CustomApp', {
         }
 
         var iterationName = this.myIteration.Name;
+        this.selectedIteration = iterationName;
+
+        this._buildCardBoard();
+
+    },
+
+    _onOwnerSelect : function() {
+
+        var value = this.down('#ownerSelector').getRecord();
+        this.selectedOwner = value.get('UserName')
+
+        this._buildCardBoard();
+
+    },
+
+    _getFilters: function() {
+
+        var me = this;
+        var filters = [];
+
+        if ( me.selectedIteration !== null) {
+            filters.push({
+                property: 'Iteration.Name',
+                operator: '=',
+                value: me.selectedIteration
+            });
+        }
+
+        if ( me.selectedOwner !== null) {
+            filters.push({
+                property: 'Owner.UserName',
+                operator: '=',
+                value: me.selectedOwner
+            });
+        }
+        return filters;
+    },
+
+    _buildCardBoard: function() {
+
+        var me = this;
 
         if (this.cardBoard) {
             this.cardBoard.destroy();
@@ -87,14 +167,8 @@ Ext.define('CustomApp', {
                 field: 'WorkProduct'
             },
             storeConfig:{
-                fetch: ['WorkProduct','ScheduleState'],
-                filters: [
-                    {
-                        property: 'Iteration.Name',
-                        operator: '=',
-                        value: iterationName
-                    }
-                ]
+                fetch: ['WorkProduct','ScheduleState','Owner','UserName'],
+                filters: me._getFilters()
             }
         });
 
