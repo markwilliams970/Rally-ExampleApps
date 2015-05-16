@@ -5,7 +5,9 @@ Ext.define('CustomApp', {
     items: [
         {
             xtype: 'container',
-            html: '<font color="blue">Blue-Colored</font> Cards Associate to <font color="blue">Accepted</font> Work Products'
+            html: '<p style="font-size:12px"><strong><font color="blue">Blue-Colored </font></strong>Cards Associate to <strong><font color="blue">Accepted</font></strong> Work Products</p>',
+            columnWidth: 1,
+            width: 600
         },
         {
             xtype: 'container',
