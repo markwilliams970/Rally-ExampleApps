@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+  <meta name="Name" content="App Example: Attribute Values" />
+   <title>Attribute Values Example</title>
+   <script type="text/javascript" src="/apps/1.29/sdk.js"></script>
+   <script type="text/javascript">
+
+  function attributeQueryExample() {
+
+    var storyFieldName = "Schedule State";
+    var defectFieldName = "State";
+
+    // WORKAROUND CODE:
+    // Careful!! TypeDefinition's have SPACES in the names! See the below hash.
+    var fieldNameByArtifact = {
+        "Hierarchical Requirement": "Schedule State",
+        "Defect": "State",
+        "Test Case": "Last Verdict"
+    };
+
+    // WORKAROUND CODE:
+    // Function to extract allowedValues array from TypeDefs
+    var getAllowedValuesFromTypeDefs = function(result) {
+
+        var typeDefsKeys = [];
+        var allowedValuesHash = {};
+        var allowedValuesStrings = [];
+
+        // Result will come back as a hash: {"errors": [], "warnings": [], "keyNameInQueryConfig":typeDefsObject}
+        // We need to loop through the hash fields to grab just the typeDefs key since we don't know which key we were passed, per se
+        for (var property in result) {
+            if (result.hasOwnProperty(property)) {
+                if ((property !== "errors") && (property !== "warnings")) {
+                    allowedValuesHash[property] = [];
+                    typeDefsKeys.push(property);
+                }
+            }
+        }
+
+        for (var i=0; i<typeDefsKeys.length; i++) {
+            var typeDefsKey = typeDefsKeys[i];
+            var typeDefs = result[typeDefsKey];
+            var artifactType = typeDefs[0].Name;
+            var objectFieldName = "";
+
+            objectFieldName = fieldNameByArtifact[artifactType];
+
+            var attributes = typeDefs[0].Attributes;
+            for (var j=0; j<attributes.length; j++) {
+                var attrName = attributes[j].Name;
+                if (attrName === objectFieldName) {
+                    var allowedValues = attributes[j].AllowedValues;
+                    allowedValuesStrings = [];
+                    for (var k=0; k<allowedValues.length; k++) {
+                        allowedValuesStrings.push(allowedValues[k].StringValue);
+                    }
+                    allowedValuesHash[typeDefsKey] = allowedValuesStrings;
+                }
+            }
+        }
+
+        return allowedValuesHash;
+
+    };
+
+     var showAttributeValues = function(result) {
+
+        // WORKAROUND CODE: call utility function to extract allowed values arrays from TypeDefs data
+        var allowedValuesHash = getAllowedValuesFromTypeDefs(result);
+
+        // Original output logic directly of results:
+
+        // var aDiv = document.getElementById("aDiv");
+        // aDiv.innerHTML = '<b>attributeQueryExample</b><br>';
+        // for (var property in results) {
+        //     aDiv.innerHTML += "&nbsp;<b>" + property + "</b><br>";
+        //     for (var i=0 ; i < results[property].length ; i++) {
+        //         aDiv.innerHTML += "&nbsp;&nbsp;" + results[property][i] + "<br>";
+        //     }
+        // }
+
+        var aDiv = document.getElementById("aDiv");
+        aDiv.innerHTML = '<b>attributeQueryExample</b><br>';
+        for (var property in allowedValuesHash) {
+            aDiv.innerHTML += "&nbsp;<b>" + property + "</b><br>";
+            for (var i=0 ; i < allowedValuesHash[property].length ; i++) {
+              aDiv.innerHTML += "&nbsp;&nbsp;" + allowedValuesHash[property][i] + "<br>";
+            }
+        }
+    };
+
+    var queryConfig = [];
+
+    // Original query using placeholders
+    // queryConfig[0] = {type: 'Hierarchical Requirement',
+        //     key : 'storyStates',
+        //     attribute: 'Schedule State'
+        //     };
+        // queryConfig[1] = {type: 'Defect',
+        //     key : 'defectStates',
+        //     attribute: 'State'
+        //     };
+        // queryConfig[2] = {type: 'Test Case',
+        //     key : 'testCaseStates',
+        //     attribute: 'Last Verdict'
+        // };
+
+    // WORKAROUND CODE: Issue query against TypeDefinitions directly instead of using placeholder convenience functions
+    // Workaround below to query TypeDefinitions directly since the adhoc placeholder query for allowed attributes
+    // has a bug, DE24703
+
+    // BE CAREFUL!! Note that when Querying TypeDefinitions, Artifact Names always have a space, as do the
+    // Names of Fields, i.e. "Schedule State"
+
+    queryConfig[0] = {
+      type : 'TypeDefinition',
+      key : 'storyScheduleStates',
+      fetch: 'Name,Attributes',
+      query: '(Name = "Hierarchical Requirement")'
+    };
+    queryConfig[1] = {
+        type: 'TypeDefinition',
+        key: 'defectStates',
+        fetch: 'Name,Attributes',
+        query: '(Name = "Defect")'
+    };
+    queryConfig[2] = {
+        type: 'TypeDefinition',
+        key: 'testCaseVerdicts',
+        fetch: 'Name,Attributes',
+        query: '(Name = "Test Case")'
+    };
+    var rallyDataSource = new rally.sdk.data.RallyDataSource('__WORKSPACE_OID__',
+                                     '__PROJECT_OID__',
+                                     '__PROJECT_SCOPING_UP__',
+                                     '__PROJECT_SCOPING_DOWN__');
+    rallyDataSource.findAll(queryConfig, showAttributeValues);
+   }
+
+   rally.addOnLoad(attributeQueryExample);
+
+   </script>
+</head>
+
+<body>
+   <div id="aDiv"></div>
+</body>
+</html>
