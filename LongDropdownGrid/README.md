@@ -3,7 +3,7 @@ LongDropdownGrid
 
 This is a custom grid that provides a dropdown editor/column intended to handle Dropdown fields where the custom field contains more than 200 entries, as a workaround for DE24698.
 
-![App Screenshot](https://raw.githubusercontent.com/markwilliams970/Rally-ExampleApps/master/LongDropdownGrid/images/screenshot1.png)
+![App Screenshot](https://raw.githubusercontent.com/markwilliams970/Rally-ExampleApps/master/LongDropdownGrid/images/screenshot2.png)
 
 ## Usage:
 
