@@ -104,14 +104,20 @@ Ext.define('CustomApp', {
         Deft.Promise.all(promises).then({
             success: function(results) {
                 var theseAttributes = results[0];
+                var match_found = false;
                 Ext.Array.each(theseAttributes, function(attribute) {
                     var attributeName = attribute.get('Name');
                     if (attributeName === me._customFieldDisplayName) {
+                        match_found = true;
                         var allowedValuesCollection = attribute.getCollection('AllowedValues',
                             {fetch: ['StringValue','ValueIndex'], limit: Infinity});
                         me._getAllowedValues(me, allowedValuesCollection);
                     }
                 });
+
+                if (match_found === false) {
+                    Ext.Msg.alert('Custom Field not found!', 'Custom Field with Display Name: ' + me._customFieldDisplayName + ' not found!');
+                }
             }
         });
     },
