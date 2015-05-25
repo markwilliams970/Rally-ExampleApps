@@ -12,6 +12,7 @@ Grab the source code from:
 And save it to a local file. Customize the following lines from App-uncompressed.html as follows:
 
 ``
+
     // Customize THESE FOLLOWING TWO FIELDS ONLY!!
     // _artifactType - Set this to be the artifact type for your Grid, i.e.:
     //      _artifactType: "HierarchicalRequirement",
@@ -23,6 +24,7 @@ And save it to a local file. Customize the following lines from App-uncompressed
 
     _artifactType           : "Defect",
     _customFieldDisplayName : "Defect Dropdown"
+    
 ``
 
 Then install into your environment as a Custom HTML App. See directions here:
