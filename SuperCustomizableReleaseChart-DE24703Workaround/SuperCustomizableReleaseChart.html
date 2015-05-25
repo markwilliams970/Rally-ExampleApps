@@ -3,14 +3,12 @@
 <!-- Copyright (c) 2002-2010  Rally Software Development Corp. All rights reserved. -->
 <html>
 <head>
-<title>Super Customizable Iteration Chart</title>
-<meta name="Name" content="Mashup: Super Customizable Iteration Chart"/>
+<title>Super Customizable Release Chart</title>
+<meta name="Name" content="Mashup: Super Customizable Release Chart"/>
 <meta name="Version" content="2010.2"/>
 <meta name="Vendor" content="Rally Software"/>
-
 <link rel="stylesheet" type="text/css" href="/slm/css/rally/core.css" charset="utf-8"/>
 <link rel="stylesheet" type="text/css" href="/slm/css/slm.css" charset="utf-8"/>
-
 <script type="text/javascript" src="/slm/js-lib/dojo/1.3.1/dojo/dojo.js"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript" src="/slm/js/help.js"></script>
@@ -20,8 +18,8 @@
 <script type="text/javascript" src="/slm/mashup/1.21/js/utilities.js"></script>
 <script type="text/javascript" src="/slm/mashup/1.21/js/dropdown.js"></script>
 <script type="text/javascript">
-    var MASHUP_TYPE = RALLY.Mashup.ITERATION;
-    var SETTINGS_COOKIE_NAME = 'mu_super_customizable_iteration_settings';
+    var MASHUP_TYPE = RALLY.Mashup.RELEASE;
+    var SETTINGS_COOKIE_NAME = 'mu_super_customizable_release_settings';
 </script>
 
 <script type="text/javascript">
@@ -1782,7 +1780,7 @@ function initPage() {
 </head>
 <body>
 <div style="float:right" id="help"></div>
-<div style="float:left" id="title" class="titlebar">Super Customizable Iteration Chart</div>
+<div style="float:left" id="title" class="titlebar">Super Customizable Release Chart</div>
 <table>
     <tr>
         <td style="text-align: left; width: 99%;">
@@ -1805,7 +1803,7 @@ function initPage() {
 
 <table>
     <tr>
-        <td id="timeboxLabel" class="lbl">Iteration Name</td>
+        <td id="timeboxLabel" class="lbl">Release Name</td>
         <td><select id="timeboxList"></select></td>
     </tr>
 </table>
