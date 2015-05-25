@@ -3,7 +3,7 @@ Tagged-Artifacts-AllProjects
 
 This is a modified version of the Release Dashboard that implements an AllowedValues query directly against the TypeDefinitions object instead of AppSDK placeholder convenience variables, as a workaround for DE24703.
 
-![App Screenshot](https://raw.githubusercontent.com/markwilliams970/Rally-ExampleApps/master/Tagged-Artifacts-AllProjects/images/screenshot1.png)
+![App Screenshot](https://raw.githubusercontent.com/markwilliams970/Rally-ExampleApps/master/ReleaseDashboard-DE24704Workaround/images/screenshot1.png)
 
 ## License
 
