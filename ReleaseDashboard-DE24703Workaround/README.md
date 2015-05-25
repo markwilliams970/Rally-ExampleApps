@@ -1,4 +1,4 @@
-Tagged-Artifacts-AllProjects
+ReleaseDashboard-DE24703Workaround
 =========================
 
 This is a modified version of the Release Dashboard that implements an AllowedValues query directly against the TypeDefinitions object instead of AppSDK placeholder convenience variables, as a workaround for DE24703.

@@ -1,5 +1,5 @@
-Tagged-Artifacts-AllProjects
-=========================
+SuperCustomizableIterationChart-DE24703Workaround
+=================================================
 
 This is a modified version of the Super Customizable Iteration Chart that implements an ScheduleState query directly against the TypeDefinitions object instead of AppSDK placeholder convenience variables, as a workaround for DE24703.
 
