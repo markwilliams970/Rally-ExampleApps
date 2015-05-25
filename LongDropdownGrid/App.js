@@ -187,6 +187,8 @@ Ext.define('CustomApp', {
                             callback: function(result, operation) {
                                 if(operation.wasSuccessful()) {
                                     // console.log("Successfully updated dropdown value.");
+                                } else {
+                                    Ext.Msg.alert('Not updated!', 'A problem occurred when attempting to save updated value.');
                                 }
                             }
                         });
