@@ -9,6 +9,8 @@ This is a custom grid that provides a dropdown editor/column intended to handle 
 
 Grab the source code from:
 
+https://raw.githubusercontent.com/markwilliams970/Rally-ExampleApps/master/LongDropdownGrid/deploy/App-uncompressed.html
+
 And save it to a local file. Customize the following lines from App-uncompressed.html as follows:
 
 ```
