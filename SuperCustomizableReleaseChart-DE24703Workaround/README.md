@@ -3,7 +3,7 @@ SuperCustomizableReleaseChart-DE24703Workaround
 
 This is a modified version of the Super Customizable Release Chart that implements an ScheduleState query directly against the TypeDefinitions object instead of AppSDK placeholder convenience variables, as a workaround for DE24703.
 
-![App Screenshot](https://raw.githubusercontent.com/markwilliams970/Rally-ExampleApps/master/SuperCustomizableIterationChart-DE24703Workaround/images/screenshot1.png)
+![App Screenshot](https://raw.githubusercontent.com/markwilliams970/Rally-ExampleApps/master/SuperCustomizableReleaseChart-DE24703Workaround/images/screenshot1.png)
 
 ## License
 
