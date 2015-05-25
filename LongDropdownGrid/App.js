@@ -114,7 +114,6 @@ Ext.define('CustomApp', {
                         me._getAllowedValues(me, allowedValuesCollection);
                     }
                 });
-
                 if (match_found === false) {
                     Ext.Msg.alert('Custom Field not found!', 'Custom Field with Display Name: ' + me._customFieldDisplayName + ' not found!');
                 }
