@@ -5,10 +5,10 @@
     <meta name="Name" content="App: Story Deep Copy To Feature"/>
     <meta name="Version" content="2012.01.14"/>
     <meta name="Vendor" content="Rally Labs"/>
-    <script type="text/javascript" src="https://rally1.rallydev.com/apps/1.33/sdk.js?apiVersion=1.43"></script>
+    <script type="text/javascript" src="/apps/1.33/sdk.js?apiVersion=1.43"></script>
 
     <script type="text/javascript">
-    rally.StoryDeepCopy = function (rallyDataSource, config) {
+    rally.StoryDeepCopy = function (rallyDataSource, config, selected_feature) {
             var storyBuffer = [];
             var firstStory = null;
             var finishedCallback;
@@ -60,7 +60,7 @@
                 return object;
             };
         
-            this._addObject = function(object, typeName, selected_feature, callback) {
+            this._addObject = function(object, typeName, callback) {
                 var item = dojo.clone(object);
                 if (!firstStory) {
                     item["PortfolioItem"] = selected_feature._ref;
@@ -107,7 +107,7 @@
                 });
             };
         
-            this._copyStory = function(ref, parentRef, callback, selected_feature) {
+            this._copyStory = function(ref, parentRef, callback) {
                 rallyDataSource.getRallyObject(ref, function (foundObject) {
                     var type = getTypeFromRef(ref);
                     that._fireEvent("storyPreAdd", {story:foundObject});
@@ -118,7 +118,7 @@
                         // foundObject.Name = "(Copy of) " + foundObject.Name;
                         foundObject.Name = foundObject.Name;
                     }
-                    that._addObject(foundObject, type, selected_feature, function (storyRef) {
+                    that._addObject(foundObject, type, function (storyRef) {
                         if (!firstStory) {
                             firstStory = storyRef;
                         }
@@ -157,8 +157,8 @@
                 });
             };
         
-            this.copyStory = function (ref, selectedFeature, callback) {
-                that._copyStory(ref, undefined, that._copyAllFromBuffer, selectedFeature);
+            this.copyStory = function (ref, callback) {
+                that._copyStory(ref, undefined, that._copyAllFromBuffer);
                 finishedCallback = callback;
             };
         };
@@ -177,8 +177,11 @@
             var waiter;
             // NOTE: CHANGE THIS IF YOU HAVE CUSTOMIZED PI TYPES!!
             var typeFeature = "PortfolioItem/Feature";
-            var dataSource = new rally.sdk.data.RallyDataSource('__WORKSPACE_OID__', '__PROJECT_OID__',
-                    '__PROJECT_SCOPING_UP__', '__PROJECT_SCOPING_DOWN__');
+            var dataSource = new rally.sdk.data.RallyDataSource(
+                '__WORKSPACE_OID__',
+                '__PROJECT_OID__',
+                '__PROJECT_SCOPING_UP__',
+                '__PROJECT_SCOPING_DOWN__');
 
             function taskPostAdd(object, args) {
                 tasksAdded = tasksAdded + 1;
@@ -239,12 +242,12 @@
                     storiesAdded = 0;
                     displayStoriesAdded(storiesAdded);
                     dojo.byId("currentInfo").innerHTML = "";
-                    var copy = new rally.StoryDeepCopy(dataSource, config);
+                    var copy = new rally.StoryDeepCopy(dataSource, config, selectedFeatureValue);
                     goButton.setEnabled(false);
                     chooseButton.setEnabled(false);
                     waiter = new rally.sdk.ui.basic.Wait({});
                     waiter.display('wait');
-                    copy.copyStory(rally.sdk.util.Ref.getRelativeRef(selectedValue), selectedFeatureValue, storyCopied);
+                    copy.copyStory(rally.sdk.util.Ref.getRelativeRef(selectedValue), storyCopied);
                 }
 
             }
