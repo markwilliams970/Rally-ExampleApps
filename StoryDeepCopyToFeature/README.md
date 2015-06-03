@@ -3,7 +3,7 @@ StoryDeepCopyToFeature
 
 This is a modified version of the Story Deep Copy App, that allows the user to choose
 a target Feature to associate the Story to when copied.
-![App Screenshot](https://raw.githubusercontent.com/markwilliams970/Rally-ExampleApps/master/StoryDeepCopyToFeature/images/screenshot1.pnga)
+![App Screenshot](https://raw.githubusercontent.com/markwilliams970/Rally-ExampleApps/master/StoryDeepCopyToFeature/images/screenshot1.png)
 
 ## Usage:
 
