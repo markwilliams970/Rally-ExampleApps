@@ -296,10 +296,10 @@
                     fetch:"FormattedID,Name,Description",
                     title:"Feature Chooser",
                     type: "PortfolioItem"
-                }
+                };
 
                 featureChooser = new rally.sdk.ui.Chooser(featureChooserConfig, dataSource);
-                featureChooser.addEventListener('onClose', onFeatureChooserClose)
+                featureChooser.addEventListener('onClose', onFeatureChooserClose);
                 featureChooser.display();
 
             }
