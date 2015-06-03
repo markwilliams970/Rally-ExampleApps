@@ -3,7 +3,27 @@ StoryDeepCopyToFeature
 
 This is a modified version of the Story Deep Copy App, that allows the user to choose
 a target Feature to associate the Story to when copied.
-![App Screenshot](https://raw.githubusercontent.com/markwilliams970/Rally-ExampleApps/master/SuperCustomizableIterationChart-DE24703Workaround/images/screenshot1.png)
+![App Screenshot](https://raw.githubusercontent.com/markwilliams970/Rally-ExampleApps/master/StoryDeepCopyToFeature/images/screenshot1.pnga)
+
+## Usage:
+
+Grab the source code and install as a custom HTML app in Rally. If you have a customized
+Feature type (i.e. your bottom-level PortfolioItems are called something other than
+'Feature', then follow these steps:
+
+Before installing, save the app source it to a local file. Customize the following lines:
+
+```
+
+	// NOTE: CHANGE THIS IF YOU HAVE CUSTOMIZED PI TYPES!!
+	var typeFeature = "PortfolioItem/Feature";
+
+```
+
+For example, if your lowest level PortfolioItems are called "Pebbles" then Change: `PortfolioItem/Feature` to `PortfolioItem/Pebble`
+
+Save the file and install as a Custom HTML App in Rally. Make no other changes to the code.
+
 
 ## License
 
