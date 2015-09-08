@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User-DetailLinks</title>
+
+    <script type="text/javascript" src="https://rally1.rallydev.com/apps/2.0/sdk.js"></script>
+
+    <script type="text/javascript">
+        Rally.onReady(function () {
+                Ext.define("CustomApp",{extend:"Rally.app.App",componentCls:"app",items:[{xtype:"container",itemId:"gridContainer",columnWidth:1}],_userStore:null,launch:function(){var me=this;this.setLoading("Querying Subscription Users..."),me._userStore=Ext.create("Rally.data.wsapi.Store",{model:"User",autoLoad:!0,limit:1/0,filters:[{property:"UserName",operator:"contains",value:"@"}],fetch:["UserName","DisplayName"],listeners:{load:me._onDataLoaded,scope:me},sorters:[{property:"UserName",direction:"ASC"}]})},_onDataLoaded:function(store,data){var userRecords=[];_.each(data,function(record){var displayName=record.get("DisplayName")||"N/A";userRecords.push({UserName:record.get("UserName"),ObjectID:record.get("ObjectID"),DisplayName:displayName})}),this.setLoading(!1);var userDetailTemplate="<a href='https://rally1.rallydev.com/#/detail/user/{0}' target='_blank'>User Details</a>";this.down("#gridContainer").add({xtype:"rallygrid",showRowActionsColumn:!1,showPagingToolbar:!0,editable:!1,store:Ext.create("Rally.data.custom.Store",{data:userRecords}),pageSize:25,columnCfgs:[{text:"Name",dataIndex:"UserName",flex:1},{text:"Display Name",dataIndex:"DisplayName",renderer:function(value){return value?value:void 0}},{text:"User Details",dataIndex:"ObjectID",renderer:function(value){return Ext.String.format(userDetailTemplate,value)}}]})}});
+
+            Rally.launchApp('CustomApp', {
+                name:"User-DetailLinks",
+	            parentRepos:""
+            });
+
+        });
+    </script>
+
+
+    <style type="text/css">
+        
+    </style>
+</head>
+<body>
+</body>
+</html>
