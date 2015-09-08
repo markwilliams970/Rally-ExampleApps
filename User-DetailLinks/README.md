@@ -7,12 +7,13 @@ where the Details menu item is missing from gear menu.
 
 ## Usage:
 
-Grab the source code from:
+Copy the source code from:
 
 https://raw.githubusercontent.com/markwilliams970/Rally-ExampleApps/master/User-DetailLinks/deploy/App-uncompressed.html
 
-And save it to a local file. Customize the following lines from App-uncompressed.html as a Custom HTML App.
-See directions here:
+And paste it into a new Custom HTML App in Rally.
+
+For directions on creating a Custom Page and adding an app to it, see directions here:
 
 [Custom Page Directions from Rally Help](https://help.rallydev.com/use_apps#create)
 
