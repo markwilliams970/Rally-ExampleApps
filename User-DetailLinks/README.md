@@ -17,6 +17,9 @@ For directions on creating a Custom Page and adding an app to it, see directions
 
 [Custom Page Directions from Rally Help](https://help.rallydev.com/use_apps#create)
 
+Usage video:
+http://www.screencast.com/t/3KR7ZZAjWJK
+
 ## License
 
 AppTemplate is released under the MIT license.  See the file [LICENSE](./LICENSE) for the full text.
