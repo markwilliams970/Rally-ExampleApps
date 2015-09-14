@@ -27,6 +27,11 @@ Ext.define('CustomApp', {
                     property: 'UserName',
                     operator: 'contains',
                     value: '@'
+                },
+                {
+                    property: 'Disabled',
+                    operator: '=',
+                    value: false
                 }
             ],
             fetch: ['UserName','DisplayName'],
