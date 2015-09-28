@@ -5,7 +5,7 @@ Rally-TeamCombobox-Example
 An example of using the un-supported https://rally1.rallydev.com/slm/webservice/x/project/{projectOID}/projectusers.js
 endpoint to build a User combobox that contains only Team Members.
 
-![App screenshot](https://raw.githubusercontent.com/markwilliams970/Rally-ExampleApps/master/Rally-TeamCombobox-Example/images/screenshot1.png)
+![App screenshot](https://raw.githubusercontent.com/markwilliams970/Rally-ExampleApps/master/Rally-TeamPermissions-Example/images/screenshot1.png)
 
 ## License
 
