@@ -15,25 +15,34 @@
         {
             xtype: 'container',
             itemId: 'controlsContainer',
+            columnWidth: 1,
+            layout: 'vbox'
+        },
+        {
+            xtype: 'container',
+            itemId: 'gridContainer',
             columnWidth: 1
         }
     ],
 
     _projectUsersStore: null,
-    _artifactTypeCombobox: null,
+    _projectComboBox: null,
+    _projectUsersGrid: null,
+    _baseURL: 'https://rally1.rallydev.com',
 
     _getProjectUsersStore: function(projectOID) {
 
         var me = this;
 
-        var urlTemplate = "https://rally1.rallydev.com/slm/webservice/x/project/{0}/projectusers.js?query={1}&order={2}&dir={3}&fetch={4}";
+        var urlTemplate = "{0}/slm/webservice/x/project/{1}/projectusers.js?query={2}&order={3}&dir={4}&fetch={5}";
         var order = "UserName,ObjectID";
         var dir = "ASC,ASC";
-        var query = "((TeamMember = true) AND (Disabled = false))";
+        // var query = "((TeamMember = true) AND (Disabled = false))";
+        var query = "(Disabled = false)";
         var fetch = "UserName,FirstName,LastName,DisplayName,Disabled,Permission,TeamMember";
         var fields = ["_ref","UserName","FirstName","LastName","DisplayName","Disabled","Permission","TeamMember"];
 
-        var projectUsersURL = Ext.String.format(urlTemplate, projectOID, query, order, dir, fetch);
+        var projectUsersURL = Ext.String.format(urlTemplate, me._baseURL, projectOID, query, order, dir, fetch);
 
         var projectUsersProxy = new Ext.data.proxy.Rest({
             url : projectUsersURL,
@@ -81,48 +90,64 @@
                         data: newRecords
                     });
 
-                    me._buildComboBox();
+                    me._buildGrid();
                 }
             }
         }).load();
     },
 
-    _buildComboBox: function() {
+    _buildGrid: function() {
 
-        this._artifactTypeCombobox = Ext.create('Ext.form.ComboBox', {
-            fieldLabel:   'Choose Project User',
-            store:        this._projectUsersStore,
-            queryMode:    'local',
-            displayField: 'DisplayName',
-            valueField:   'UserName',
-            listeners: {
-                scope: this,
-                'select': this._onUserSelected
-            }
+        var me = this;
+
+        if (me._projectUsersGrid) {
+            me._projectUsersGrid.destroy();
+        }
+
+        me._projectUsersGrid = Ext.create('Rally.ui.grid.Grid', {
+            itemId: 'projectUsersGrid',
+            store: me._projectUsersStore,
+            columnCfgs: [
+                {
+                    text: 'UserName', dataIndex: 'UserName', flex: 1
+                },
+                {
+                    text: 'DisplayName', dataIndex: 'DisplayName', flex: 1
+                },
+                {
+                    text: 'Permission', dataIndex: 'Permission'
+                }
+            ]
         });
 
-        this.down('#controlsContainer').add(this._artifactTypeCombobox);        
+        me.down('#gridContainer').add(me._projectUsersGrid);
     },
 
-    _onUserSelected: function(combobox) {
-        Ext.create('Rally.ui.dialog.ConfirmDialog', {
-            title: "Selected User",
-            message: "UserName of Selected User:" + combobox.getValue(),
-            confirmLabel: "Ok",
-            listeners: {
-                confirm: function () {
-                    return;
-                }
-            }
-        });
+    _onProjectSelected: function() {
+
+        var me = this;
+        var selectedProjectRef = me._projectComboBox.getValue();
+        var selectedProjectOID = Ext.create('Rally.util.Ref', selectedProjectRef).getOid();
+
+        me._getProjectUsersStore(selectedProjectOID);
+
     },
 
     launch: function() {
 
-        var currentProjectRef = this.getContext().getProjectRef();
-        var currentProjectOID = Ext.create('Rally.util.Ref', currentProjectRef).getOid(); // returns "workspace", 123
+        var me = this;
 
-        this._getProjectUsersStore(currentProjectOID);
+        me._projectComboBox = Ext.create('Rally.ui.picker.project.ProjectPicker', {
+            fieldLabel: 'Select Project',
+            margin: 10,
+            workspace:  this.getContext().getWorkspace()._ref,                
+            listeners: {
+                change: me._onProjectSelected,
+                scope: me
+            }
+        });
+
+        me.down('#controlsContainer').add(me._projectComboBox);
     }
 });
 
