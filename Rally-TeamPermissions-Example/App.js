@@ -25,15 +25,16 @@ Ext.define('CustomApp', {
 
         var me = this;
 
-        var urlTemplate = "{0}/slm/webservice/x/project/{1}/projectusers.js?query={2}&order={3}&dir={4}&fetch={5}";
+        var urlTemplate = "{0}/slm/webservice/x/project/{1}/projectusers.js?query={2}&order={3}&dir={4}&fetch={5}&pagesize={6}";
         var order = "UserName,ObjectID";
         var dir = "ASC,ASC";
         // var query = "((TeamMember = true) AND (Disabled = false))";
         var query = "(Disabled = false)";
         var fetch = "UserName,FirstName,LastName,DisplayName,Disabled,Permission,TeamMember";
         var fields = ["_ref","UserName","FirstName","LastName","DisplayName","Disabled","Permission","TeamMember"];
+        var pagesize = "200";
 
-        var projectUsersURL = Ext.String.format(urlTemplate, me._baseURL, projectOID, query, order, dir, fetch);
+        var projectUsersURL = Ext.String.format(urlTemplate, me._baseURL, projectOID, query, order, dir, fetch, pagesize);
 
         var projectUsersProxy = new Ext.data.proxy.Rest({
             url : projectUsersURL,
