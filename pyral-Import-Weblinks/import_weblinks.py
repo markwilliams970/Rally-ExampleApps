@@ -63,7 +63,7 @@ def main(args):
 
 
             if response.resultCount == 0:
-                print "No Story %s found in Rally - No Parent will be assigned." % (story_formatted_id)
+                print "No Story %s found in Rally - No Weblink will be assigned." % (story_formatted_id)
             else:
                 print "Story %s found in Rally - Weblink will be added." % (story_formatted_id)
                 story_in_rally = response.next()
